@@ -1,0 +1,11 @@
+item_1:
+  order: order_one
+  good: jacket
+
+item_2:
+  order: order_one
+  good: shoe
+
+item_3:
+  order: order_two
+  good: shoe

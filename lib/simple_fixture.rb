@@ -1,17 +1,22 @@
 require "simple_fixture/version"
 require "active_record"
+require "active_record/fixtures"
 
 module SimpleFixture
 
   DB_DIR = 'tmp'
   DB_NAME = 'simple_fixture'
+  CONFIG_DIR = File.join('test', 'simple_fixture')
+  FIXTURES_DIR = File.join(CONFIG_DIR, 'fixtures')
 
   class << self
     def create(name: DB_NAME)
       path = build_db_file(name)
       establish_connection(path)
 
-      load 'test/simple_fixture/migration.rb'
+      load File.join(CONFIG_DIR, 'migration.rb')
+      load File.join(CONFIG_DIR, 'models.rb')
+      ActiveRecord::FixtureSet.create_fixtures(FIXTURES_DIR, ymls)
     end
 
     def migrate(&block)
@@ -23,6 +28,10 @@ module SimpleFixture
     end
 
     private
+
+    def ymls
+      Dir[File.join(FIXTURES_DIR, '*.yml')].map{ |f| File.basename(f, '.*') }
+    end
 
     def build_db_file(name)
       Dir.mkdir DB_DIR unless Dir.exists? DB_DIR
