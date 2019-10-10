@@ -1,8 +1,6 @@
 # SimpleFixture
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/simple_fixture`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Help create fixtures off rails project.
 
 ## Installation
 
@@ -22,7 +20,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You should have directory `test/simple_fixture` in your project, with structure as below. (You can check file content examples in this gem's test directory)
+
+```
+test
+├── simple_fixture
+│   ├── fixtures
+│   │   ├── goods.yml
+│   │   ├── items.yml
+│   │   └── orders.yml
+│   ├── migration.rb
+│   └── models.rb
+├── your_gem_test.rb
+└── test_helper.rb
+```
+
+Then call `SimpleFixture.new`, fixtures will be loaded into a new sqlite file in directory `tmp/` of your project, and you can use ActiveRecord to find them, such as `Order.where(...)`.
 
 ## Development
 
