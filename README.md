@@ -35,7 +35,7 @@ test
 └── test_helper.rb
 ```
 
-Then call `SimpleFixture.new`, fixtures will be loaded into a new sqlite file in directory `tmp/` of your project, and you can use ActiveRecord to find them, such as `Order.where(...)`.
+Then call `SimpleFixture.new`, or just `require 'simple_fixture/load'`, then fixtures will be loaded into a new sqlite file in directory `tmp/` of your project, and you can use ActiveRecord to find them, such as `Order.where(...)`.
 
 ## Development
 
