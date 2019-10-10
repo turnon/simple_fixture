@@ -6,7 +6,7 @@ class SimpleFixtureTest < Minitest::Test
   end
 
   def test_it_does_something_useful
-    SimpleFixture.create
+    SimpleFixture.new
     goods = Order.find_by(order_no: '1').items.includes(:good).map{ |i| i.good.name }.sort
     assert_equal ['addidas', 'nike'], goods
   end

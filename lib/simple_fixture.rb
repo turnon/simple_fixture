@@ -2,7 +2,7 @@ require "simple_fixture/version"
 require "active_record"
 require "active_record/fixtures"
 
-module SimpleFixture
+class SimpleFixture
 
   DB_DIR = 'tmp'
   DB_NAME = 'simple_fixture'
@@ -10,15 +10,6 @@ module SimpleFixture
   FIXTURES_DIR = File.join(CONFIG_DIR, 'fixtures')
 
   class << self
-    def create(name: DB_NAME)
-      path = build_db_file(name)
-      establish_connection(path)
-
-      load File.join(CONFIG_DIR, 'migration.rb')
-      load File.join(CONFIG_DIR, 'models.rb')
-      ActiveRecord::FixtureSet.create_fixtures(FIXTURES_DIR, ymls)
-    end
-
     def migrate(&block)
       Class.new(ActiveRecord::Migration::Current) do
         define_method :change do
@@ -26,25 +17,37 @@ module SimpleFixture
         end
       end.new.change
     end
+  end
 
-    private
+  def initialize
+    build_db_file
+    establish_connection
 
-    def ymls
-      Dir[File.join(FIXTURES_DIR, '*.yml')].map{ |f| File.basename(f, '.*') }
-    end
+    load File.join(CONFIG_DIR, 'migration.rb')
+    load File.join(CONFIG_DIR, 'models.rb')
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    ActiveRecord::FixtureSet.create_fixtures(FIXTURES_DIR, ymls)
 
-    def build_db_file(name)
-      Dir.mkdir DB_DIR unless Dir.exists? DB_DIR
-      path = File.join(DB_DIR, "#{name}.splite3")
-      File.delete(path) if File.exists? path
-      path
-    end
+    true
+  end
 
-    def establish_connection(path)
-      ::ActiveRecord::Base.configurations = {test: {adapter: 'sqlite3', database: path}}.with_indifferent_access
-      ::ActiveRecord::Base.establish_connection(:test)
-    rescue => _
-      ::ActiveRecord::Base.establish_connection('test')
-    end
+  private
+
+  def ymls
+    Dir[File.join(FIXTURES_DIR, '*.yml')].map{ |f| File.basename(f, '.*') }
+  end
+
+  def build_db_file
+    Dir.mkdir DB_DIR unless Dir.exists? DB_DIR
+    path = File.join(DB_DIR, "#{DB_NAME}.splite3")
+    File.delete(path) if File.exists? path
+    @path = path
+  end
+
+  def establish_connection
+    ::ActiveRecord::Base.configurations = {test: {adapter: 'sqlite3', database: @path}}.with_indifferent_access
+    ::ActiveRecord::Base.establish_connection(:test)
+  rescue => _
+    ::ActiveRecord::Base.establish_connection('test')
   end
 end
