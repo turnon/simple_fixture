@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require 'simple_fixture'
+require 'fileutils'
+
+if Dir.exists? SimpleFixture::CONFIG_DIR
+  STDERR.puts "#{SimpleFixture::CONFIG_DIR} already exists !"
+  return
+end
+
+FileUtils.mkdir_p SimpleFixture::FIXTURES_DIR
+
+File.write SimpleFixture::MODELS_FILE, <<-EOF
+class Thing < ActiveRecord::Base
+end
+EOF
+
+File.write SimpleFixture::MIGRATION_FILE, <<-EOF
+SimpleFixture.migrate do
+  create_table :things do |t|
+  end
+end
+EOF
+
+puts 'simple_fixture structure done !'

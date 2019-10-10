@@ -8,6 +8,8 @@ class SimpleFixture
   DB_NAME = 'simple_fixture'
   CONFIG_DIR = File.join('test', 'simple_fixture')
   FIXTURES_DIR = File.join(CONFIG_DIR, 'fixtures')
+  MIGRATION_FILE = File.join(CONFIG_DIR, 'migration.rb')
+  MODELS_FILE = File.join(CONFIG_DIR, 'models.rb')
 
   class << self
     def migrate(&block)
@@ -23,12 +25,10 @@ class SimpleFixture
     build_db_file
     establish_connection
 
-    load File.join(CONFIG_DIR, 'migration.rb')
-    load File.join(CONFIG_DIR, 'models.rb')
     ActiveRecord::Base.logger = Logger.new(STDOUT)
+    load MIGRATION_FILE
+    load MODELS_FILE
     ActiveRecord::FixtureSet.create_fixtures(FIXTURES_DIR, ymls)
-
-    true
   end
 
   private

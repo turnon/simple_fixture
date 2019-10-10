@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-You should have directory `test/simple_fixture` in your project, with structure as below. (You can check file content examples in this gem's test directory)
+You should have directory `test/simple_fixture` in your project, with structure as below. You can run `simple-fixture` to generate it. Also check file content examples in this gem's test directory.
 
 ```
 test
